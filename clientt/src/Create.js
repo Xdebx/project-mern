@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Nav from './Nav';
+import axios from 'axios';
 
 const Create = () => {
 
@@ -23,23 +24,46 @@ const Create = () => {
 
     const handleChange = name => event => {
 
-        // console.log('name', name, 'event', event.target.value);
+        console.log('name', name, 'event', event.target.value);
 
         setState({ ...state, [name]: event.target.value });
 
     };
+    console.log(state)
 
+    const handleSubmit = event => {
 
-    // function handleChange(name) {
+        event.preventDefault();
 
-    //     return function(event) {
+        // console.table({ title, content, user });
 
-    //         setState({ ...state, [name]: event.target.value });
+        axios
 
-    //     };
+            .post(`${process.env.REACT_APP_API}/post`, { title, content, user })
 
-    // }
+            .then(response => {
 
+                console.log(response);
+
+                // empty state
+
+                setState({ ...state, title: '', content: '', user: '' });
+
+                // show sucess alert
+
+                alert(`Post titled ${response.data.title} is created`);
+
+            })
+
+            .catch(error => {
+
+                console.log(error.response);
+
+                alert(error.response.data.error);
+
+            });
+
+    };
 
     return (
 
@@ -51,7 +75,7 @@ const Create = () => {
 
             {JSON.stringify(state)}
 
-            <form>
+            <form onSubmit={handleSubmit}>
 
                 <div className="form-group">
 
